@@ -1,0 +1,26 @@
+# Directories
+node_modules/
+.venv/
+__pycache__/
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.env
+
+# MacOS
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
+
+# Build
+dist/
+build/
