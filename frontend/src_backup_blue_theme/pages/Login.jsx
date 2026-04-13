@@ -163,14 +163,14 @@ export default function Login({ onLogin }) {
             <span className="term-dot term-dot-yellow" />
             <span className="term-dot term-dot-green" />
           </div>
-          <span className="term-title-text">sentinel@soc:~$ — bash</span>
+          <span className="term-title-text">idxsoc@soc:~$ — bash</span>
           <div style={{ width: 52 }} />
         </div>
 
         {/* Terminal body */}
         <div className="term-body">
           {/* Boot sequence */}
-          <TypedLine text="[  0.00] Project Sentinel SOC v2.4.1 initializing..." delay={0}   color="#4ade80" />
+          <TypedLine text="[  0.00] Project IDXSOC SOC v2.4.1 initializing..." delay={0}   color="#4ade80" />
           <TypedLine text="[  0.12] Threat detection engine........  [ OK ]"     delay={400}  color="#a0d9b4" />
           <TypedLine text="[  0.31] Network monitor daemon..........  [ OK ]"    delay={900}  color="#a0d9b4" />
           <TypedLine text="[  0.55] Connecting to campus IDS........  [ OK ]"    delay={1400} color="#a0d9b4" />
@@ -182,7 +182,7 @@ export default function Login({ onLogin }) {
           {/* System info row */}
           <div style={{ display: 'flex', gap: 24, marginBottom: 16, flexWrap: 'wrap' }}>
             {[
-              { label: 'HOST',    val: 'sentinel-soc-01' },
+              { label: 'HOST',    val: 'idxsoc-soc-01' },
               { label: 'OS',      val: 'Linux 6.8.0-amd64' },
               { label: 'UPTIME',  val: '14d 06h 22m' },
               { label: 'THREATS', val: '🔴 3 ACTIVE', danger: true },
@@ -201,7 +201,7 @@ export default function Login({ onLogin }) {
 
           {/* Auth prompt */}
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#4ade80', marginBottom: 12 }}>
-            sentinel@soc:~$ <span style={{ color: '#e8edf7' }}>sudo authenticate --session=ops</span>
+            idxsoc@soc:~$ <span style={{ color: '#e8edf7' }}>sudo authenticate --session=ops</span>
           </div>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -275,7 +275,7 @@ export default function Login({ onLogin }) {
             fontSize: 11,
             color: '#4a5568',
           }}>
-            # demo → <span style={{ color: '#a0d9b4' }}>admin</span> / <span style={{ color: '#a0d9b4' }}>sentinel@123</span>
+            # demo → <span style={{ color: '#a0d9b4' }}>admin</span> / <span style={{ color: '#a0d9b4' }}>idxsoc@123</span>
           </div>
         </div>
       </div>

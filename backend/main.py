@@ -1,5 +1,5 @@
 """
-Project Sentinel — FastAPI Backend
+IDXSOC — FastAPI Backend
 """
 import asyncio
 import json
@@ -17,7 +17,7 @@ from log_parser import parse_log_content
 from simulator import generate_batch, generate_normal_entry
 
 # ── App ────────────────────────────────────────────────────────────────────────
-app = FastAPI(title="Project Sentinel API", version="1.0.0")
+app = FastAPI(title="IDXSOC API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -73,7 +73,7 @@ def _add_entry(entry: dict):
 USERS = {
     "admin": {
         "username": "admin",
-        "password": "sentinel@123",
+        "password": "idxsoc@123",
         "role": "admin",
         "name": "Admin User",
         "status": "active",
@@ -129,7 +129,7 @@ async def login(body: dict):
 
     return {
         "success": True,
-        "token": "sentinel-demo-token",
+        "token": "idxsoc-demo-token",
         "user": {
             "username": body["username"],
             "role": user["role"],
@@ -254,7 +254,7 @@ async def update_whitelists(body: dict):
 # ── System Settings API ────────────────────────────────────────────────────────
 SETTINGS = {
     "retentionDays": 90,
-    "emailAlert": "secops@sentinel.local",
+    "emailAlert": "secops@idxsoc.local",
     "slackWebhook": "https://hooks.slack.com/services/T000/B000/XXXX"
 }
 
@@ -484,4 +484,4 @@ async def live_feed():
 # ── Health ─────────────────────────────────────────────────────────────────────
 @app.get("/api/health")
 async def health():
-    return {"status": "ok", "version": "1.0.0", "project": "Sentinel"}
+    return {"status": "ok", "version": "1.0.0", "project": "IDXSOC"}

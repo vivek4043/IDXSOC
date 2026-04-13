@@ -70,7 +70,7 @@ export default function AccessDenied({ user }) {
             lineHeight: 1.6,
           }}>
             <span style={{ color: 'var(--critical)' }}>✗</span>{' '}
-            [sentinel-soc] AUTH_FAIL: unauthorized access attempt<br />
+            [idxsoc-soc] AUTH_FAIL: unauthorized access attempt<br />
             <span style={{ color: 'var(--text-muted)' }}>├─ timestamp: </span>
             <span style={{ color: '#a0d9b4' }}>{timestamp}</span><br />
             <span style={{ color: 'var(--text-muted)' }}>└─ status: </span>

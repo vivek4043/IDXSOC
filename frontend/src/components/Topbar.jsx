@@ -10,7 +10,7 @@ export default function Topbar({ user, actions }) {
   return (
     <div className="topbar">
       <div className="topbar-left">
-        <span className="topbar-user">sentinel@soc:~$</span>{' '}
+        <span className="topbar-user">idxsoc@soc:~$</span>{' '}
         <span className="topbar-path">{path}</span>
       </div>
 

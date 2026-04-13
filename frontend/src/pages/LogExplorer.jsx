@@ -70,7 +70,7 @@ export default function LogExplorer() {
     ]
     const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n')
     const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
-    const a = document.createElement('a'); a.href = url; a.download = 'sentinel_logs.csv'; a.click()
+    const a = document.createElement('a'); a.href = url; a.download = 'idxsoc_logs.csv'; a.click()
   }
 
   const { setActions } = useTopbar()

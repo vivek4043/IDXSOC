@@ -1,5 +1,5 @@
 """
-Project Sentinel — Realistic Log Simulator
+IDXSOC — Realistic Log Simulator
 Generates believable mixed traffic: 80% normal, 20% attack
 """
 import random

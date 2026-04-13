@@ -1,13 +1,13 @@
-# 🛡️ Project Sentinel
-### AI-Powered Threat Detection & Forensic Dashboard for Campus Networks
+# 🛡️ IDXSOC
+### AI-Powered Security Operations Platform for Campus Networks
 
-> **Final Year Project** — Combines Networking, Cybersecurity, AI/ML, and Web Development
+> **Final Year Project** — AI-Driven Threat Detection & Forensic Analytics Platform
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start (IDXSOC)
 
-### 1. Start the Backend (AI Engine + API)
+### 1. Start the Backend (IDXSOC Engine + API)
 
 ```bash
 cd backend
@@ -15,7 +15,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
 
-### 2. Start the Frontend (Dashboard)
+### 2. Start the Frontend (IDXSOC Dashboard)
 
 ```bash
 cd frontend
@@ -24,7 +24,7 @@ npm run dev
 ```
 
 Open **http://localhost:5173** and login with:
-- Username: `admin` | Password: `sentinel@123`
+- Username: `admin` | Password: `idxsoc@123`
 - Username: `analyst` | Password: `analyst@456`
 
 ---
@@ -35,7 +35,7 @@ Open **http://localhost:5173** and login with:
 |---|---|
 | 🔴 Live Attack Map | World map with real-time attack origin markers |
 | 📡 Live Event Stream | SSE-powered scrolling log feed |
-| 🤖 AI Threat Engine | Detects SQLi, XSS, LFI, Brute Force, Scanners, Command Injection |
+| 🤖 IDXSOC Threat Engine | Detects SQLi, XSS, LFI, Brute Force, Scanners, Command Injection |
 | 🔍 Investigation Queue | AI-flagged entries with evidence, confidence %, recommendations |
 | 📊 Analytics | Charts, heatmaps, radar plots |
 | 📁 Log Explorer | Upload Apache/Nginx/Syslog/CSV files for instant analysis |
@@ -59,7 +59,7 @@ Open **http://localhost:5173** and login with:
 Frontend (React + Vite)
     ↕ REST API + SSE
 Backend (Python FastAPI)
-    ├── AI Engine (regex + statistical scoring)
+    ├── IDXSOC Engine (regex + statistical scoring)
     ├── Log Parser (Apache / Nginx / Syslog / CSV)
     └── Simulator (80% normal, 20% attack traffic)
 ```

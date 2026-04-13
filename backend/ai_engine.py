@@ -1,5 +1,5 @@
 """
-Project Sentinel — AI Threat Detection Engine
+IDXSOC — AI Threat Detection Engine
 Detects: SQLi, XSS, LFI/Path Traversal, Brute Force, Scanner, Command Injection, Admin Probing
 """
 import re

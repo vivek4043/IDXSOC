@@ -48,7 +48,7 @@ export default function Sidebar({ user, onLogout }) {
       <div className="sidebar-logo">
         <div className="sidebar-logo-icon">🛡️</div>
         <div>
-          <div className="sidebar-logo-text">Sentinel</div>
+          <div className="sidebar-logo-text">IDXSOC</div>
           <div className="sidebar-logo-sub">Security Operations</div>
         </div>
       </div>

@@ -9,15 +9,15 @@ import Sidebar from './components/Sidebar'
 
 export default function App() {
   const [user, setUser] = useState(() => {
-    try { return JSON.parse(sessionStorage.getItem('sentinel_user')) } catch { return null }
+    try { return JSON.parse(sessionStorage.getItem('idxsoc_user')) } catch { return null }
   })
 
   const handleLogin = (userData) => {
-    sessionStorage.setItem('sentinel_user', JSON.stringify(userData))
+    sessionStorage.setItem('idxsoc_user', JSON.stringify(userData))
     setUser(userData)
   }
   const handleLogout = () => {
-    sessionStorage.removeItem('sentinel_user')
+    sessionStorage.removeItem('idxsoc_user')
     setUser(null)
   }
 

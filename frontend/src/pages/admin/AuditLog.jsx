@@ -16,7 +16,7 @@ const AUDIT_ENTRIES = [
   { id: 'a12', actor: 'm.rivera', action: 'Login',                    detail: 'Successful login from 10.0.1.88',             type: 'info',  ts: '2026-04-12T09:30:00Z' },
   { id: 'a13', actor: 'unknown',  action: 'Failed login attempt',     detail: 'Invalid credentials for username root',       type: 'danger',ts: '2026-04-12T07:11:44Z' },
   { id: 'a14', actor: 'admin',    action: 'AI analysis toggled',      detail: 'AI threat analysis feature disabled',         type: 'warn',  ts: '2026-04-11T16:02:55Z' },
-  { id: 'a15', actor: 'admin',    action: 'System startup',           detail: 'Sentinel SOC v2.4.1 started on sentinel-soc-01', type: 'info', ts: '2026-04-11T08:00:00Z' },
+  { id: 'a15', actor: 'admin',    action: 'System startup',           detail: 'IDXSOC SOC v2.4.1 started on idxsoc-soc-01', type: 'info', ts: '2026-04-11T08:00:00Z' },
 ]
 
 const TYPE_LABELS = { All: 'All', info: 'Info', warn: 'Warning', danger: 'Critical', admin: 'Admin' }

@@ -1,5 +1,5 @@
 """
-Project Sentinel — Log File Parser
+IDXSOC — Log File Parser
 Supports: Apache/Nginx Combined, Syslog, Suricata/Snort alerts, CSV/JSON
 """
 import re
