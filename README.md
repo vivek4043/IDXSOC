@@ -63,3 +63,5 @@ Backend (Python FastAPI)
     ├── Log Parser (Apache / Nginx / Syslog / CSV)
     └── Simulator (80% normal, 20% attack traffic)
 ```
+
+[Author]:(@vivek)
