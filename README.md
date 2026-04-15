@@ -73,13 +73,13 @@
 ┌─────────────────────────────────────────────────────────┐
 │                 IDXSOC Platform                         │
 │                                                         │
-│  Frontend (React 18 + Vite)  →  http://localhost:5173   │
+│  Frontend (React 18 + Vite)  →  http://(open URL link)  │
 │  ┌──────────────────────────────────────────────────┐   │
 │  │  Login  →  Dashboard  →  Investigation           │   │
 │  │  LogExplorer  Analytics  Admin Panel             │   │
 │  └──────────────────────────────────────────────────┘   │
-│                   ↕  REST API + SSE                      │
-│  Backend (Python FastAPI)  →  http://localhost:8000      │
+│                   ↕  REST API + SSE                     │
+│  Backend (Python FastAPI)  →  http:// URL    │
 │  ┌──────────────────────────────────────────────────┐   │
 │  │  AI Engine   (regex + scoring rules)             │   │
 │  │  Log Parser  (Apache/Nginx/Syslog/CSV)           │   │
@@ -160,7 +160,7 @@ npm install
 npm run dev
 ```
 
-Open **http://localhost:5173** and log in with the admin credentials you set in `.env`.
+Open **http://localhost:**** and log in with the admin credentials you set in `.env`.
 
 ### 4. Test MongoDB Connection (optional)
 
