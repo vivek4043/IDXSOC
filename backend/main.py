@@ -3,6 +3,7 @@ IDXSOC — FastAPI Backend
 """
 import asyncio
 import json
+import logging
 import random
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -13,8 +14,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
 from ai_engine import analyze_log_entry, FAKE_GEO, RULES, WHITELISTS
+from alerting import dispatch_alert, build_alert_content, send_email_alert, send_slack_alert
 from log_parser import parse_log_content
 from simulator import generate_batch, generate_normal_entry
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s — %(message)s",
+)
+logger = logging.getLogger("idxsoc.main")
 
 # ── App ────────────────────────────────────────────────────────────────────────
 app = FastAPI(title="IDXSOC API", version="1.0.0")
@@ -51,15 +59,32 @@ _seed()
 
 
 def _add_entry(entry: dict):
-    """Add entry to store, run AI, keep within MAX_STORE."""
+    """Add entry to store, run AI, dispatch alerts, keep within MAX_STORE."""
     analysis = analyze_log_entry(entry)
     if analysis:
-        entry["threat"] = analysis.to_dict()
+        threat_dict = analysis.to_dict()
+        entry["threat"] = threat_dict
         entry["flagged"] = True
         _alerts.append(entry)
         # keep alerts list bounded
         if len(_alerts) > MAX_STORE:
             _alerts.pop(0)
+
+        # ── Dispatch email + Slack alert ─────────────────────────────────────
+        result = dispatch_alert(
+            threat      = threat_dict,
+            log_entry   = entry,
+            email_recipient = SETTINGS.get("emailAlert", ""),
+            slack_webhook   = SETTINGS.get("slackWebhook", ""),
+        )
+        if result["email_sent"] or result["slack_sent"]:
+            logger.info(
+                "Alert dispatched for %s from %s — email=%s slack=%s",
+                threat_dict.get("threat_name"),
+                entry.get("ip"),
+                result["email_sent"],
+                result["slack_sent"],
+            )
     else:
         entry["flagged"] = False
         entry["threat"] = None
@@ -408,13 +433,52 @@ async def resolve_alert(alert_id: str):
 
 @app.post("/api/alerts/{alert_id}/escalate")
 async def escalate_alert(alert_id: str):
-    # In real system: send email/pager. Here just flag severity=CRITICAL
+    """Escalate an alert to CRITICAL and re-dispatch notifications."""
     for a in _alerts:
         if a["id"] == alert_id:
             if a.get("threat"):
                 a["threat"]["severity"] = "CRITICAL"
                 a["threat"]["escalated"] = True
+                # Re-dispatch with CRITICAL severity
+                dispatch_alert(
+                    threat          = a["threat"],
+                    log_entry       = a,
+                    email_recipient = SETTINGS.get("emailAlert", ""),
+                    slack_webhook   = SETTINGS.get("slackWebhook", ""),
+                )
     return {"success": True, "id": alert_id}
+
+
+@app.post("/api/test-alert")
+async def test_alert():
+    """
+    Manually trigger a test alert to verify email and Slack configuration.
+    Returns the send results so you can confirm credentials are correct.
+    """
+    sample_threat = {
+        "threat_id":      "TEST-001",
+        "threat_name":    "Test Alert",
+        "severity":       "LOW",
+        "category":       "Test",
+        "confidence":     1.0,
+        "evidence":       'Matched pattern in: "...test-alert-endpoint...',
+        "recommendation": "This is a test. No action required.",
+        "icon":           "🧪",
+        "matched_rule":   "TEST-001",
+    }
+    sample_entry = {
+        "ip":        "127.0.0.1",
+        "timestamp": datetime.utcnow().isoformat(),
+        "method":    "GET",
+        "request":   "/api/test-alert",
+    }
+    result = dispatch_alert(
+        threat          = sample_threat,
+        log_entry       = sample_entry,
+        email_recipient = SETTINGS.get("emailAlert", ""),
+        slack_webhook   = SETTINGS.get("slackWebhook", ""),
+    )
+    return {"success": True, "results": result}
 
 
 # ── Geo attack data ────────────────────────────────────────────────────────────

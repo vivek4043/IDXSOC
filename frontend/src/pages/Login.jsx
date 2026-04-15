@@ -266,17 +266,7 @@ export default function Login({ onLogin }) {
             </button>
           </form>
 
-          {/* Hint */}
-          <div style={{
-            marginTop: 18,
-            paddingTop: 14,
-            borderTop: '1px solid rgba(74,222,128,0.12)',
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 11,
-            color: '#4a5568',
-          }}>
-            # demo → <span style={{ color: '#a0d9b4' }}>admin</span> / <span style={{ color: '#a0d9b4' }}>idxsoc@123</span>
-          </div>
+
         </div>
       </div>
     </div>
