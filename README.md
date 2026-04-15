@@ -79,7 +79,7 @@
 │  │  LogExplorer  Analytics  Admin Panel             │   │
 │  └──────────────────────────────────────────────────┘   │
 │                   ↕  REST API + SSE                     │
-│  Backend (Python FastAPI)  →  http:// URL    │
+│  Backend (Python FastAPI)  →  http:// URL               │
 │  ┌──────────────────────────────────────────────────┐   │
 │  │  AI Engine   (regex + scoring rules)             │   │
 │  │  Log Parser  (Apache/Nginx/Syslog/CSV)           │   │
@@ -87,8 +87,8 @@
 │  │  Auth        (JWT + bcrypt)                      │   │
 │  │  Alerting    (SMTP / Slack — configurable)       │   │
 │  └──────────────────────────────────────────────────┘   │
-│                   ↕  Motor async driver                  │
-│  MongoDB Atlas (Cloud)                                   │
+│                   ↕  Motor async driver                 │
+│  MongoDB Atlas (Cloud)                                  │
 │  ┌──────────────────────────────────────────────────┐   │
 │  │  logs  ·  threats  ·  users  ·  audit            │   │
 │  └──────────────────────────────────────────────────┘   │
