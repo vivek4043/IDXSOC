@@ -3,10 +3,9 @@ import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell,
 } from 'recharts'
-import { Activity, Shield, AlertTriangle, CheckCircle, Globe, Zap } from 'lucide-react'
+import { Activity, Shield, AlertTriangle, Zap, Wifi, Server, Target } from 'lucide-react'
 import SeverityBadge from '../components/SeverityBadge'
 import LiveFeed from '../components/LiveFeed'
-import AttackMap from '../components/AttackMap'
 
 const API = 'http://localhost:8000'
 
@@ -28,6 +27,11 @@ function useCounter(target, duration = 900) {
     requestAnimationFrame(step)
   }, [target, duration])
   return val
+}
+
+function fmtTime(iso) {
+  if (!iso) return '—'
+  return new Date(iso).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 }
 
 export default function Dashboard() {
@@ -61,48 +65,171 @@ export default function Dashboard() {
     .map(([k]) => ({ name: k, value: sev[k] || 0 }))
     .filter(d => d.value > 0)
 
-  const trend = stats?.hourly_trend?.slice(-12) || []
+  const trend         = stats?.hourly_trend?.slice(-12) || []
+  const topIPs        = stats?.top_attacking_ips || []
+  const subnetData    = stats?.subnet_breakdown  || []
+  const maxSubnetEvts = Math.max(...subnetData.map(s => s.events), 1)
 
   return (
     <div>
-
       <div className="page-container fade-in">
-        {/* Stat Cards */}
+
+        {/* ── Stat Cards ── */}
         <div className="stats-grid">
-          <StatCard
-            icon="📡" label="Total Events" value={total.toLocaleString()}
-            sub="Since monitoring began" variant="info"
-            iconBg="rgba(34,211,238,.1)" iconColor="#22d3ee"
-          />
-          <StatCard
-            icon="🚨" label="Threats Detected" value={threats.toLocaleString()}
-            sub={`${sev.CRITICAL || 0} critical`} variant="critical"
-            iconBg="rgba(255,71,87,.1)" iconColor="#ff4757"
-          />
-          <StatCard
-            icon="⏳" label="Pending Investigation" value={pending.toLocaleString()}
-            sub="Require immediate attention" variant="medium"
-            iconBg="rgba(234,179,8,.1)" iconColor="#eab308"
-          />
-          <StatCard
-            icon="✅" label="Resolved" value={resolved.toLocaleString()}
-            sub="Threats neutralized" variant="online"
-            iconBg="rgba(74,222,128,.1)" iconColor="#4ade80"
-          />
+          <StatCard icon="📡" label="Total Events"         value={total.toLocaleString()}
+            sub="Since monitoring began"       variant="info"     iconBg="rgba(34,211,238,.1)"  iconColor="#22d3ee" />
+          <StatCard icon="🚨" label="Threats Detected"    value={threats.toLocaleString()}
+            sub={`${sev.CRITICAL || 0} critical`}              variant="critical" iconBg="rgba(255,71,87,.1)"  iconColor="#ff4757" />
+          <StatCard icon="⏳" label="Pending Investigation" value={pending.toLocaleString()}
+            sub="Require immediate attention"  variant="medium"   iconBg="rgba(234,179,8,.1)"   iconColor="#eab308" />
+          <StatCard icon="✅" label="Resolved"             value={resolved.toLocaleString()}
+            sub="Threats neutralized"          variant="online"   iconBg="rgba(74,222,128,.1)"  iconColor="#4ade80" />
         </div>
 
-        {/* Row 2: Attack Map + Live Feed */}
+        {/* ── Row 2: Top Attackers + Campus Subnet Breakdown ── */}
         <div className="grid-60-40 mb-24">
+
+          {/* Top Attackers Panel */}
           <div className="card">
             <div className="card-header">
-              <div className="card-title"><Globe size={15} /> Live Attack Map</div>
-              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Real-time geo-distribution</span>
+              <div className="card-title"><Target size={15} /> Top Attacking IPs</div>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>By threat count · live</span>
             </div>
-            <div style={{ padding: '12px' }}>
-              <AttackMap />
+            <div style={{ overflowX: 'auto' }}>
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: 28 }}>#</th>
+                    <th>IP Address</th>
+                    <th>Subnet Zone</th>
+                    <th>Threats</th>
+                    <th>Events</th>
+                    <th>Last Seen</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topIPs.length === 0 && (
+                    <tr><td colSpan={6} style={{ textAlign: 'center', padding: 32, color: 'var(--text-muted)' }}>
+                      No threat data yet
+                    </td></tr>
+                  )}
+                  {topIPs.map((row, i) => {
+                    const isExternal = row.subnet === 'External'
+                    return (
+                      <tr key={i}>
+                        <td style={{ color: 'var(--text-muted)', fontSize: 11 }}>{i + 1}</td>
+                        <td>
+                          <span style={{
+                            fontFamily: 'var(--font-mono)', fontSize: 12,
+                            color: isExternal ? '#ff4757' : 'var(--accent)',
+                          }}>
+                            {isExternal && '⚠ '}{row.ip}
+                          </span>
+                        </td>
+                        <td>
+                          <span style={{
+                            fontSize: 11, padding: '2px 8px', borderRadius: 5,
+                            background: 'rgba(255,255,255,.05)',
+                            color: isExternal ? '#ff4757' : 'var(--text-secondary)',
+                          }}>
+                            {row.subnet}
+                          </span>
+                        </td>
+                        <td>
+                          <span style={{ color: '#ff4757', fontWeight: 700, fontSize: 13 }}>
+                            {row.threat_count ?? row.count}
+                          </span>
+                        </td>
+                        <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>{row.count}</td>
+                        <td style={{ color: 'var(--text-secondary)', fontSize: 11, fontFamily: 'var(--font-mono)' }}>
+                          {fmtTime(row.last_seen)}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
 
+          {/* Campus Subnet Breakdown */}
+          <div className="card">
+            <div className="card-header">
+              <div className="card-title"><Wifi size={15} /> Campus Network Zones</div>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Events vs threats</span>
+            </div>
+            <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {subnetData.length === 0 && (
+                <div style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 24, fontSize: 13 }}>
+                  No subnet data yet
+                </div>
+              )}
+              {subnetData.map((s) => {
+                const evtPct     = Math.round((s.events  / maxSubnetEvts) * 100)
+                const threatPct  = s.events > 0 ? Math.round((s.threats / s.events) * 100) : 0
+                return (
+                  <div key={s.label}>
+                    {/* Label row */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                        <div style={{ width: 10, height: 10, borderRadius: '50%', background: s.color, flexShrink: 0 }} />
+                        <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>{s.label}</span>
+                      </div>
+                      <div style={{ display: 'flex', gap: 12, fontSize: 11 }}>
+                        <span style={{ color: 'var(--text-muted)' }}>{s.events.toLocaleString()} events</span>
+                        <span style={{ color: s.threats > 0 ? '#ff4757' : 'var(--text-muted)', fontWeight: s.threats > 0 ? 700 : 400 }}>
+                          {s.threats} threats
+                        </span>
+                      </div>
+                    </div>
+                    {/* Event bar */}
+                    <div style={{ height: 6, borderRadius: 3, background: 'rgba(255,255,255,.06)', overflow: 'hidden', marginBottom: 3 }}>
+                      <div style={{
+                        height: '100%', borderRadius: 3,
+                        width: `${evtPct}%`,
+                        background: s.color,
+                        opacity: 0.4,
+                        transition: 'width .6s ease',
+                      }} />
+                    </div>
+                    {/* Threat overlay bar */}
+                    <div style={{ height: 4, borderRadius: 2, background: 'rgba(255,255,255,.04)', overflow: 'hidden' }}>
+                      <div style={{
+                        height: '100%', borderRadius: 2,
+                        width: `${evtPct > 0 ? Math.round((s.threats / maxSubnetEvts) * 100) : 0}%`,
+                        background: '#ff4757',
+                        transition: 'width .6s ease',
+                      }} />
+                    </div>
+                    {/* Threat % badge */}
+                    {s.events > 0 && (
+                      <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 3, textAlign: 'right' }}>
+                        {threatPct}% threat rate
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+
+              {/* Legend */}
+              {subnetData.length > 0 && (
+                <div style={{ display: 'flex', gap: 16, marginTop: 4, paddingTop: 10, borderTop: '1px solid var(--border)', fontSize: 11, color: 'var(--text-muted)' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <span style={{ width: 12, height: 6, borderRadius: 2, background: 'rgba(74,222,128,.4)', display: 'inline-block' }} />
+                    Events
+                  </span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                    <span style={{ width: 12, height: 4, borderRadius: 2, background: '#ff4757', display: 'inline-block' }} />
+                    Threats
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ── Row 3: Live Event Stream ── */}
+        <div className="mb-24">
           <div className="card">
             <div className="card-header">
               <div className="card-title"><Activity size={15} /> Live Event Stream</div>
@@ -114,7 +241,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Row 3: Trend Chart + Pie + Top IPs */}
+        {/* ── Row 4: Trend + Severity Pie ── */}
         <div className="grid-3 mb-24">
           {/* Trend Chart */}
           <div className="card" style={{ gridColumn: 'span 2' }}>
@@ -141,7 +268,7 @@ export default function Dashboard() {
                     labelStyle={{ color: 'var(--accent)' }}
                   />
                   <Area type="monotone" dataKey="normal" stroke="#4ade80" fill="url(#gradNormal)" strokeWidth={1.5} name="Normal" />
-                  <Area type="monotone" dataKey="alerts" stroke="#ff4757" fill="url(#gradAlert)" strokeWidth={1.5} name="Threats" />
+                  <Area type="monotone" dataKey="alerts" stroke="#ff4757" fill="url(#gradAlert)"  strokeWidth={1.5} name="Threats" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -156,15 +283,12 @@ export default function Dashboard() {
               <ResponsiveContainer width="100%" height={140}>
                 <PieChart>
                   <Pie data={pieData} cx="50%" cy="50%" innerRadius={40} outerRadius={65}
-                    dataKey="value" paddingAngle={3}
-                  >
+                    dataKey="value" paddingAngle={3}>
                     {pieData.map((entry, i) => (
                       <Cell key={i} fill={SEVERITY_COLORS[entry.name]} />
                     ))}
                   </Pie>
-                  <Tooltip
-                    contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12 }}
-                  />
+                  <Tooltip contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12 }} />
                 </PieChart>
               </ResponsiveContainer>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center', marginTop: 4 }}>
@@ -179,54 +303,16 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Row 4: Top IPs + Recent Threats */}
+        {/* ── Row 5: Recent Threats + Attack Categories ── */}
         <div className="grid-2">
-          {/* Top Attacking IPs */}
-          <div className="card">
-            <div className="card-header">
-              <div className="card-title">🌐 Top Attacking IPs</div>
-            </div>
-            <div style={{ overflowX: 'auto' }}>
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>IP Address</th>
-                    <th>Origin</th>
-                    <th>Events</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(stats?.top_attacking_ips || []).map((row, i) => (
-                    <tr key={i}>
-                      <td style={{ color: 'var(--text-muted)' }}>{i + 1}</td>
-                      <td style={{ color: 'var(--accent)' }}>{row.ip}</td>
-                      <td style={{ color: 'var(--text-secondary)' }}>{row.geo?.country || '—'}</td>
-                      <td>
-                        <span style={{ color: 'var(--critical)', fontWeight: 700 }}>{row.count}</span>
-                      </td>
-                    </tr>
-                  ))}
-                  {!(stats?.top_attacking_ips?.length) && (
-                    <tr><td colSpan={4} style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 20 }}>No data yet</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
           {/* Recent Threats */}
           <div className="card">
             <div className="card-header">
-              <div className="card-title">
-                <Shield size={15} /> Recent Threats
-              </div>
+              <div className="card-title"><Shield size={15} /> Recent Threats</div>
             </div>
             <div style={{ padding: '8px 12px' }}>
               {alerts.length === 0
-                ? <div className="empty-state" style={{ padding: 30 }}>
-                    <div>No threats flagged yet</div>
-                  </div>
+                ? <div className="empty-state" style={{ padding: 30 }}><div>No threats flagged yet</div></div>
                 : alerts.map((a, i) => (
                     <div key={a.id || i} style={{
                       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -246,16 +332,14 @@ export default function Dashboard() {
               }
             </div>
           </div>
-        </div>
 
-        {/* Attack Categories */}
-        {stats?.category_breakdown && Object.keys(stats.category_breakdown).length > 0 && (
-          <div className="card" style={{ marginTop: 20 }}>
+          {/* Attack Categories */}
+          <div className="card">
             <div className="card-header">
-              <div className="card-title">📊 Attack Categories</div>
+              <div className="card-title"><Server size={15} /> Attack Categories</div>
             </div>
             <div className="card-body" style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              {Object.entries(stats.category_breakdown)
+              {Object.entries(stats?.category_breakdown || {})
                 .sort((a, b) => b[1] - a[1])
                 .map(([cat, count]) => (
                   <div key={cat} style={{
@@ -267,9 +351,13 @@ export default function Dashboard() {
                   </div>
                 ))
               }
+              {!Object.keys(stats?.category_breakdown || {}).length && (
+                <div style={{ color: 'var(--text-muted)', fontSize: 13, padding: 20 }}>No data yet</div>
+              )}
             </div>
           </div>
-        )}
+        </div>
+
       </div>
     </div>
   )

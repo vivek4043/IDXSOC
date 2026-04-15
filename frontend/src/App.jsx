@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useState } from 'react'
 import Login from './pages/Login'
+import ChangePassword from './pages/ChangePassword'
 import Dashboard from './pages/Dashboard'
 import Investigation from './pages/Investigation'
 import LogExplorer from './pages/LogExplorer'
@@ -24,13 +25,33 @@ export default function App() {
     sessionStorage.setItem('idxsoc_user', JSON.stringify(userData))
     setUser(userData)
   }
+
   const handleLogout = () => {
     sessionStorage.removeItem('idxsoc_user')
+    sessionStorage.removeItem('idxsoc_token')
     setUser(null)
   }
 
+  // ── Not logged in → show Login ──────────────────────────────────────────────
   if (!user) return <Login onLogin={handleLogin} />
 
+  // ── Must change password → show forced change-password page ────────────────
+  if (user.must_change_password) {
+    return (
+      <ChangePassword
+        user={user}
+        onDone={() => {
+          // Clear the flag so they don't get redirected again
+          const updated = { ...user, must_change_password: false }
+          sessionStorage.setItem('idxsoc_user', JSON.stringify(updated))
+          setUser(updated)
+        }}
+        onLogout={handleLogout}
+      />
+    )
+  }
+
+  // ── Normal app ──────────────────────────────────────────────────────────────
   return (
     <TopbarProvider>
       <BrowserRouter>
@@ -50,7 +71,7 @@ function AppContent({ user, onLogout }) {
 
   return (
     <>
-      <Topbar user={user} actions={actions} />
+      <Topbar user={user} actions={actions} onLogout={onLogout} />
       <Routes>
         {/* ── Main routes ── */}
         <Route path="/"             element={<Navigate to="/dashboard" replace />} />

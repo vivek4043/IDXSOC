@@ -1,26 +1,46 @@
-# Directories
-node_modules/
-.venv/
-__pycache__/
+# ── Secrets — NEVER commit these ──────────────────────────────────────────────
+.env
+**/.env
+*.env
 
-# Python
+# ── Python ─────────────────────────────────────────────────────────────────────
+__pycache__/
+**/__pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
-env/
-venv/
 pip-log.txt
 pip-delete-this-directory.txt
-.env
 
-# MacOS
-.DS_Store
+# ── Virtual environments ───────────────────────────────────────────────────────
+.venv/
+**/.venv/
+venv/
+env/
+ENV/
 
-# IDEs
-.idea/
-.vscode/
-
-# Build
+# ── Node / Frontend ────────────────────────────────────────────────────────────
+node_modules/
+**/node_modules/
 dist/
 build/
+.vite/
+*.local
+
+# ── OS / IDE ───────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ── Logs ───────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Dev scratch / temp files ───────────────────────────────────────────────────
+scratch/
+**/scratch/
+backend/package-lock.json

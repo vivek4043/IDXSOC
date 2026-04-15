@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
+import { loginRequest } from '../api'
 
 const API = 'http://localhost:8000'
+
 
 /* ── Binary Rain Canvas ──────────────────────────────────────── */
 function BinaryRain() {
@@ -128,20 +130,19 @@ export default function Login({ onLogin }) {
     setLoading(true)
     setError('')
     try {
-      const res  = await fetch(`${API}/api/auth/login`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(form),
-      })
+      const res  = await loginRequest(form.username, form.password)
       const data = await res.json()
       if (!res.ok) throw new Error(data.detail || 'Login failed')
-      onLogin(data.user)
+      // Store token separately so apiFetch() can read it
+      sessionStorage.setItem('idxsoc_token', data.token)
+      onLogin(data.user)   // user includes must_change_password flag
     } catch (err) {
       setError(err.message)
     } finally {
       setLoading(false)
     }
   }
+
 
   return (
     <div className="login-page">
