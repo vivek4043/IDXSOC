@@ -203,10 +203,10 @@ On first startup, the following accounts are seeded automatically:
 | Username | Role | Must Change Password | Notes |
 |---|---|---|---|
 | *(from `SEED_ADMIN_USERNAME`)* | `admin` | No | Set credentials in `.env` |
-| `analyst` | `analyst` | **Yes** | Temp password: `changeme` |
-| `j.chen` | `analyst` | **Yes** | Temp password: `changeme` |
-| `s.patel` | `analyst` | **Yes** | Temp password: `changeme` |
-| `m.rivera` | `analyst` (inactive) | **Yes** | Temp password: `changeme` |
+| `analyst` | `analyst` | **Yes** | Temp password: `cha#####` |
+| `j.chen` | `analyst` | **Yes** | Temp password: `cha#####` |
+| `s.patel` | `analyst` | **Yes** | Temp password: `cha#####` |
+| `m.rivera` | `analyst` (inactive) | **Yes** | Temp password: `cha#####` |
 
 > ⚠️ Analyst accounts with `must_change_password = true` are gated behind the **Change Password** page on first login. They cannot access the dashboard until a new password is set.
 
