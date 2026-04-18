@@ -350,4 +350,7 @@ IDXSOC/
 
 ## 📄 Licence
 
-Academic project — not licensed for production use.
+This project is licensed under the Apache License 2.0.
+
+Note: Older versions were licensed under the MIT License.
+
