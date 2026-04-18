@@ -44,3 +44,22 @@ logs/
 scratch/
 **/scratch/
 backend/package-lock.json
+
+# ── Additional Robustness ─────────────────────────────────────────────────────
+# Ignore temporary code backups
+**/*_backup*/
+
+# Python testing/coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Database files
+*.db
+*.sqlite3
+
+# Vite/Frontend artifacts
+vite.config.js.timestamp-*
+.eslintcache
