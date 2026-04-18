@@ -293,12 +293,25 @@ async def get_current_user(request: Request) -> dict:
     auth = request.headers.get("Authorization", "")
     if not auth.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Missing or invalid Authorization header")
-    token = auth[7:]
+
+    token = auth[7:].strip()
+    if not token:
+        raise HTTPException(status_code=401, detail="Token is empty")
+
+    # Basic structural check: JWT should have 2 dots
+    if token.count(".") != 2:
+        # Log suspected corruption (e.g. string "undefined" or "null" from JS)
+        if token in ("undefined", "null"):
+            logger.warning("Frontend sent literal string '%s' as token", token)
+        else:
+            logger.warning("Malformed token received (dots=%d, length=%d)", token.count("."), len(token))
+        raise HTTPException(status_code=401, detail="Token is malformed (invalid structure)")
+
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         user_id: str = payload.get("sub", "")
         if not user_id:
-            raise HTTPException(401, "Token payload invalid")
+            raise HTTPException(401, "Token payload invalid: missing sub")
     except JWTError as exc:
         raise HTTPException(status_code=401, detail=f"Token error: {exc}")
 

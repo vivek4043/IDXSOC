@@ -12,7 +12,11 @@
 export const API = 'http://localhost:8000'
 
 /** Read the stored JWT from sessionStorage. */
-export const getToken = () => sessionStorage.getItem('idxsoc_token') || ''
+export const getToken = () => {
+  const t = sessionStorage.getItem('idxsoc_token')
+  if (!t || t === 'undefined' || t === 'null') return ''
+  return t
+}
 
 /**
  * Wrapper around fetch() that:

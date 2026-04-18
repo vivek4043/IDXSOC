@@ -134,7 +134,9 @@ export default function Login({ onLogin }) {
       const data = await res.json()
       if (!res.ok) throw new Error(data.detail || 'Login failed')
       // Store token separately so apiFetch() can read it
-      sessionStorage.setItem('idxsoc_token', data.token)
+      if (data.token) {
+        sessionStorage.setItem('idxsoc_token', data.token)
+      }
       onLogin(data.user)   // user includes must_change_password flag
     } catch (err) {
       setError(err.message)

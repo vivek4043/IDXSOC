@@ -38,9 +38,8 @@ export default function Sidebar({ user, onLogout }) {
     return () => clearInterval(id)
   }, [])
 
-  const initials = user?.name
-    ? user.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
-    : 'U?'
+  const initials = (user?.full_name || user?.username || 'U')
+    .split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
 
   return (
     <nav className="sidebar">
@@ -115,9 +114,7 @@ export default function Sidebar({ user, onLogout }) {
       <div className="sidebar-user">
         <div className="user-avatar">{initials}</div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="user-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {user?.name || 'User'}
-          </div>
+            {user?.full_name || user?.username || 'User'}
           <div className="user-role">{user?.role || 'analyst'}</div>
         </div>
         <button

@@ -18,7 +18,17 @@ import AuditLog from './pages/admin/AuditLog'
 
 export default function App() {
   const [user, setUser] = useState(() => {
-    try { return JSON.parse(sessionStorage.getItem('idxsoc_user')) } catch { return null }
+    try {
+      const u = sessionStorage.getItem('idxsoc_user')
+      const t = sessionStorage.getItem('idxsoc_token')
+      // Only consider logged in if BOTH user profile AND token exist
+      if (u && t && t !== 'undefined' && t !== 'null') {
+        return JSON.parse(u)
+      }
+      return null
+    } catch {
+      return null
+    }
   })
 
   const handleLogin = (userData) => {

@@ -521,13 +521,13 @@ async def seed_users_if_empty() -> None:
     now = datetime.utcnow()
     users = [
         {
-            "username": admin_username, "full_name": "Admin User",
+            "username": admin_username, "full_name": "User Admin",
             "role": "admin", "status": "active",
             "password_hash": _hash(admin_password),
             "must_change_password": False, "created_at": now, "last_login": None,
         },
         {
-            "username": "analyst", "full_name": "Security Analyst",
+            "username": "analyst", "full_name": "User Security Analyst",
             "role": "analyst", "status": "active",
             "password_hash": _hash("changeme"),
             "must_change_password": True, "created_at": now, "last_login": None,
